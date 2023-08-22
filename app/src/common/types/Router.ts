@@ -1,0 +1,16 @@
+import { LazyExoticComponent, ReactNode } from 'react';
+
+export interface IAppRoute {
+  [key: string]: {
+    path: string;
+    component: LazyExoticComponent<() => JSX.Element>;
+  };
+}
+
+export interface RouteItem {
+  path: string;
+  title?: string;
+  iconComponent?: React.FC;
+  component: ReactNode;
+  exact?: boolean;
+}

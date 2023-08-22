@@ -1,0 +1,12 @@
+{
+    "messages": {
+      "badRequest": "Bad Request.",
+      "forbidden": "Forbidden",
+      "unauthorized": "You are not authorized to this function.",
+      "notFound": "Record not found",
+      "serviceUnavailable": "The webapp has been inactive, please contact your administrator.",
+      "internalError": "An unexpected error occurred.",
+      "unexpectedError": "An unexpected error occurred.",
+      "sessionExpiredError": "Session expired, please log in again."
+    }
+}
