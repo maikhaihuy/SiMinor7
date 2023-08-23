@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
+using SiMinor7.Application.Common.Constants;
 using SiMinor7.Application.Common.Exceptions;
 using SiMinor7.Application.Common.Interfaces;
 using SiMinor7.Application.Common.Settings;
@@ -30,13 +31,24 @@ public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComman
         var user = await _userManager.FindByEmailAsync(command.Email);
         if (user is null)
         {
-            throw new NotFoundException("User not found.");
+            // throw new NotFoundException(App.MessageCode.AccountNotExists);
+            return;
+        }
+
+        if (!user.EmailConfirmed)
+        {
+            throw new InvalidRequestException(MessageCode.IncompleteAccount);
+        }
+
+        if (user.Status == Domain.Enums.UserStatus.Blocked)
+        {
+            throw new InvalidRequestException(MessageCode.BlockedAccount);
         }
 
         string token = await _userManager.GeneratePasswordResetTokenAsync(user);
         string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-        IDictionary<string, string> queryStrings = new Dictionary<string, string>
+        IDictionary<string, string?> queryStrings = new Dictionary<string, string?>
             {
                 { "userId", user.Id.ToString() },
                 { "token", encodedToken },

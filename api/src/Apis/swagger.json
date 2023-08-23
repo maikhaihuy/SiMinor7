@@ -574,7 +574,7 @@
         "description": "",
         "x-enumNames": [
           "Actived",
-          "Deactivated",
+          "Inactived",
           "Blocked"
         ],
         "enum": [

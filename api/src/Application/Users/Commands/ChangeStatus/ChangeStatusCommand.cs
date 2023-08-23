@@ -8,12 +8,14 @@ using SiMinor7.Application.Common.Constants;
 using SiMinor7.Domain.Entities;
 using SiMinor7.Domain.Enums;
 
-namespace SiMinor7.Application.Users.Commands.UpdateStatus;
+namespace SiMinor7.Application.Users.Commands.ChangeStatus;
 
 public record UpdateStatusCommand(string Id, UserStatus Status) : IRequest;
 
 public class UpdateStatusCommandHandler : IRequestHandler<UpdateStatusCommand>
 {
+    private const string TemplateName = "update-user-status.liquid";
+
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IEmailService _emailService;
     private readonly SystemSettings _systemSettings;
@@ -31,11 +33,12 @@ public class UpdateStatusCommandHandler : IRequestHandler<UpdateStatusCommand>
 
         if (user is null)
         {
-            throw new NotFoundException($"{App.ResponseCodeMessage.AccountNotExists}", $"The resource you have requested cannot be found");
+            throw new NotFoundException(MessageCode.AccountNotExists);
         }
 
-        _emailService.SendEmail(user.Email, _systemSettings.ResetPasswordEmailSubject, "", new
+        _emailService.SendEmail(user.Email, _systemSettings.ResetPasswordEmailSubject, TemplateName, new
         {
+            Status = $"{user.Status}"
         });
     }
 }

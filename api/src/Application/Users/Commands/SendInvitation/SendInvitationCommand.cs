@@ -5,6 +5,7 @@ using SiMinor7.Application.Common.Exceptions;
 using SiMinor7.Application.Common.Interfaces;
 using SiMinor7.Application.Common.Constants;
 using SiMinor7.Domain.Entities;
+using SiMinor7.Application.Users.EventHandlers.SendInvitation;
 
 namespace SiMinor7.Application.Users.Commands.SendInvitation;
 
@@ -34,7 +35,7 @@ public class SendInvitationCommandHandler : IRequestHandler<SendInvitationComman
         var existingUser = await _userManager.FindByEmailAsync(request.Email);
         if (existingUser != null)
         {
-            throw new InvalidRequestException($"{App.ResponseCodeMessage.EmailExisted}. The email '{request.Email}' already exists.");
+            throw new InvalidRequestException(MessageCode.EmailExisted);
         }
 
         var addr = new MailAddress(request.Email);
@@ -60,6 +61,8 @@ public class SendInvitationCommandHandler : IRequestHandler<SendInvitationComman
         };
         await _context.UserRoles.AddAsync(userRole, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
+
+        await _publisher.Publish(new SendInvitationEvent(newUser), cancellationToken);
 
         return newUser.Id;
     }

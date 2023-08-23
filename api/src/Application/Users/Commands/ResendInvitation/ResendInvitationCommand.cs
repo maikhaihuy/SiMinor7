@@ -28,12 +28,12 @@ public class ResendInvitationCommandHandler : IRequestHandler<ResendInvitationCo
 
         if (user is null)
         {
-            throw new NotFoundException($"{App.ResponseCodeMessage.AccountNotExists}", $"The resource you have requested cannot be found");
+            throw new NotFoundException(MessageCode.AccountNotExists);
         }
 
-        if (user.Status == Domain.Enums.UserStatus.Deactivated)
+        if (user.Status == Domain.Enums.UserStatus.Inactived)
         {
-            throw new ForbiddenAccessException($"{App.ResponseCodeMessage.AccountDeactive}. Your account has been deactivated.");
+            throw new ForbiddenAccessException(MessageCode.InactiveAccount);
         }
 
         await _publisher.Publish(new SendInvitationEvent(user), cancellationToken);

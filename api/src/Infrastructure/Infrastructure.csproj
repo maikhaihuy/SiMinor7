@@ -26,8 +26,16 @@
 
     <ItemGroup>
       <None Remove="Persistence\Migrations\" />
+      <None Remove="Services\send-invitation.liquid" />
+      <None Remove="Services\reset-password.liquid" />
+      <None Remove="Services\update-user-status.liquid" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Persistence\Migrations\" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Services\send-invitation.liquid" />
+      <EmbeddedResource Include="Services\reset-password.liquid" />
+      <EmbeddedResource Include="Services\change-user-status.liquid" />
     </ItemGroup>
 </Project>

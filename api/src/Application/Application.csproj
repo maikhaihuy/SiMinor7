@@ -43,7 +43,7 @@
       <None Remove="Common\Extensions\" />
       <None Remove="Users\EventHandlers\" />
       <None Remove="Users\EventHandlers\SendInvitation\" />
-      <None Remove="Users\Commands\UpdateStatus\" />
+      <None Remove="Users\Commands\ChangeStatus\" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Common\Constants\" />
@@ -68,7 +68,7 @@
       <Folder Include="Common\Extensions\" />
       <Folder Include="Users\EventHandlers\" />
       <Folder Include="Users\EventHandlers\SendInvitation\" />
-      <Folder Include="Users\Commands\UpdateStatus\" />
+      <Folder Include="Users\Commands\ChangeStatus\" />
     </ItemGroup>
     <ItemGroup>
       <None Update="Auth\Commands\ForgotPassword\T4Template.tt">
@@ -77,16 +77,8 @@
       </None>
     </ItemGroup>
     <ItemGroup>
-      <Compile Remove="Auth\Commands\ForgotPassword\reset-password.cs" />
-    </ItemGroup>
-    <ItemGroup>
       <Compile Update="Auth\Commands\ForgotPassword\reset-password.cs">
         <DependentUpon>reset-password.liquid</DependentUpon>
       </Compile>
-    </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Include="Auth\Commands\ForgotPassword\reset-password.cs">
-        <DependentUpon>reset-password.liquid</DependentUpon>
-      </EmbeddedResource>
     </ItemGroup>
 </Project>

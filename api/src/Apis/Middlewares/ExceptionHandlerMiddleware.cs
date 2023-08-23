@@ -68,7 +68,7 @@ public class ExceptionHandlerMiddleware
 
             var responseContent = new
             {
-                Title = $"{App.ResponseCodeMessage.ValidationFailed}",
+                Title = $"{MessageCode.ValidationFailed}",
                 StatusCode = (int)HttpStatusCode.BadRequest,
                 Detail = message,
                 validationException.Errors

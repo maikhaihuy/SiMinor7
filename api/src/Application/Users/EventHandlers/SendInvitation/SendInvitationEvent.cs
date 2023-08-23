@@ -35,7 +35,7 @@ public class SendInvitationEventHandler : INotificationHandler<SendInvitationEve
         string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
         string setPasswordUrl = $"{_systemSettings.ClientAppBaseUrl}{_systemSettings.ClientAppSetPasswordPath}";
-        IDictionary<string, string> queryStrings = new Dictionary<string, string>
+        IDictionary<string, string?> queryStrings = new Dictionary<string, string?>
             {
                 { "userId", notification.User.Id.ToString() },
                 { "token", encodedToken },

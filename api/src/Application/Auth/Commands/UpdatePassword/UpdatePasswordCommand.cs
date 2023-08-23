@@ -31,14 +31,25 @@ public class UpdatePasswordCommandHandler : IRequestHandler<UpdatePasswordComman
 
         if (user is null)
         {
-            throw new NotFoundException($"{App.ResponseCodeMessage.AccountNotExists}. The resource you have requested cannot be found");
+            throw new NotFoundException(MessageCode.AccountNotExists);
         }
+
+        if (!user.EmailConfirmed)
+        {
+            throw new InvalidRequestException(MessageCode.IncompleteAccount);
+        }
+
+        if (user.Status == Domain.Enums.UserStatus.Blocked)
+        {
+            throw new InvalidRequestException(MessageCode.BlockedAccount);
+        }
+
         string decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
 
         var isUserTokenValid = await _userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultProvider, request.Purpose, decodedToken);
         if (!isUserTokenValid)
         {
-            throw new InvalidRequestException($"{App.ResponseCodeMessage.UserTokenValid}. The link has been expired or invalid.");
+            throw new InvalidRequestException($"{MessageCode.InvalidToken}");
         }
 
         if (request.Purpose == UserManager<ApplicationUser>.ResetPasswordTokenPurpose)
@@ -46,7 +57,7 @@ public class UpdatePasswordCommandHandler : IRequestHandler<UpdatePasswordComman
             var checkSamePreviousPassword = await _userManager.CheckPasswordAsync(user, request.Password);
             if (checkSamePreviousPassword)
             {
-                throw new InvalidRequestException($"{App.ResponseCodeMessage.NewPasswordIsSameOldPassword}. Your new password cannot be the same as your current password. Please try another password.");
+                throw new InvalidRequestException($"{MessageCode.NewPasswordIsSameOldPassword}");
             }
 
             IdentityResult iResult = await _userManager.ResetPasswordAsync(user, decodedToken, request.Password);

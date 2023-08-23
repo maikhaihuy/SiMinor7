@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using SiMinor7.Application.Auth.Shared.Models;
+using SiMinor7.Application.Common.Constants;
 using SiMinor7.Application.Common.Exceptions;
 using SiMinor7.Application.Common.Interfaces;
 using SiMinor7.Domain.Entities;
@@ -31,18 +32,18 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
         var user = await _userManager.FindByEmailAsync(loginCommand.Email);
         if (user is null)
         {
-            throw new NotFoundException();
-        }
-
-        if (!user.EmailConfirmed)
-        {
-            throw new ForbiddenAccessException();
+            throw new UnauthorizedAccessException(MessageCode.InvalidCredential);
         }
 
         var authenticated = await _userManager.CheckPasswordAsync(user, loginCommand.Password);
         if (!authenticated)
         {
-            throw new UnauthorizedAccessException();
+            throw new UnauthorizedAccessException(MessageCode.InvalidCredential);
+        }
+
+        if (!user.EmailConfirmed)
+        {
+            throw new ForbiddenAccessException(MessageCode.IncompleteAccount);
         }
 
         var claims = await _userManager.GetClaimsAsync(user) ?? new List<Claim>();
