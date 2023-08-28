@@ -47,8 +47,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Common\Constants\" />
-      <Folder Include="Auth\" />
-      <Folder Include="Auth\Commands\" />
       <Folder Include="Auth\Commands\Login\" />
       <Folder Include="Auth\Shared\" />
       <Folder Include="Auth\Shared\Models\" />

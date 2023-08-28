@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SiMinor7.Application.Auth.Shared.Models;
 using SiMinor7.Application.Common.Constants;
@@ -19,12 +20,16 @@ public record LoginCommand : IRequest<AuthResponse>
 public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IApplicationDbContext _dbContext;
     private readonly ITokenService _tokenService;
+    private readonly ICurrentUserService _currentUserService;
 
-    public LoginCommandHandler(UserManager<ApplicationUser> userManager, ITokenService tokenService)
+    public LoginCommandHandler(UserManager<ApplicationUser> userManager, ITokenService tokenService, IApplicationDbContext dbContext, ICurrentUserService currentUserService)
     {
         _userManager = userManager;
         _tokenService = tokenService;
+        _dbContext = dbContext;
+        _currentUserService = currentUserService;
     }
 
     public async Task<AuthResponse> Handle(LoginCommand loginCommand, CancellationToken cancellationToken)
@@ -52,14 +57,20 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
         string accessToken = _tokenService.GenerateAccessToken(user, claims, roles);
         string refreshToken = string.Empty;
 
-        //if (loginCommand.IsRemember)
-        //{
-        //    refreshToken = _jwtService.GenerateRefreshToken();
+        if (loginCommand.IsRemember)
+        {
+            refreshToken = _tokenService.GenerateRefreshToken();
 
-        //    // Update refresh token
-        //    user.RefreshToken = refreshToken;
-        //    await _userManager.UpdateAsync(user);
-        //}
+            // Add new refresh token
+            var userLogin = new SessionLogin
+            {
+                UserId = user.Id,
+                RefreshToken = refreshToken,
+                UserAgent = _currentUserService.UserAgent
+            };
+            _dbContext.SessionLogins.Add(userLogin);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
 
         var result = new AuthResponse
         {

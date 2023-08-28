@@ -23,5 +23,7 @@ public interface IApplicationDbContext
 
     DbSet<TabArtist> TabArtists { get; }
 
+    DbSet<SessionLogin> SessionLogins { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

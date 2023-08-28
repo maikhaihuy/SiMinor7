@@ -3,4 +3,5 @@
 public interface ICurrentUserService : IScopedService
 {
     string? UserId { get; }
+    string UserAgent { get; }
 }

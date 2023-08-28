@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SiMinor7.Application.Common.Interfaces;
 using SiMinor7.Domain.Entities;
-using SiMinor7.Infrastructure.Identity;
 using SiMinor7.Infrastructure.Persistence.Interceptors;
 
 namespace SiMinor7.Infrastructure.Persistence;
@@ -34,6 +33,8 @@ public class SiMinor7DbContext : IdentityDbContext<ApplicationUser, ApplicationR
     public DbSet<Tab> Tabs => Set<Tab>();
 
     public DbSet<TabArtist> TabArtists => Set<TabArtist>();
+
+    public DbSet<SessionLogin> SessionLogins => Set<SessionLogin>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SiMinor7.Apis.Controllers;
 using SiMinor7.Application.Auth.Commands.ForgotPassword;
 using SiMinor7.Application.Auth.Commands.Login;
+using SiMinor7.Application.Auth.Commands.RefreshToken;
 using SiMinor7.Application.Auth.Commands.UpdatePassword;
 using SiMinor7.Application.Auth.Shared.Models;
 
@@ -28,5 +29,11 @@ public class AuthController : ApiControllerBase
     {
         await Mediator.Send(updatePasswordCommand);
         return NoContent();
+    }
+
+    [HttpPost("refresh-token")]
+    public async Task<ActionResult<AuthResponse>> RefreshToken(RefreshTokenCommand command)
+    {
+        return await Mediator.Send(command);
     }
 }

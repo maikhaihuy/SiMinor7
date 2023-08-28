@@ -9,6 +9,7 @@ public static class MessageCode
     public const string IncompleteAccount = "messages.incompleteAccount";
     public const string BlockedAccount = "messages.blockedAccount";
     public const string InvalidCredential = "messages.invalidCredential";
+    public const string ExpiredCredential = "messages.expiredCredential";
     public const string NewPasswordIsSameOldPassword = "messages.newPasswordIsSameOldPassword";
     public const string ValidationFailed = "messages.validationFailed";
     public const string ExpiredToken = "messages.expiredToken";

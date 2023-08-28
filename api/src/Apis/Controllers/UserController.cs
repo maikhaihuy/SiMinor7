@@ -9,8 +9,8 @@ using SiMinor7.Application.Users.Queries.GetUserDetail;
 using System.Collections.Generic;
 using SiMinor7.Application.Users.Commands.SendInvitation;
 using SiMinor7.Application.Users.Commands.ResendInvitation;
-using SiMinor7.Application.Users.Commands.UpdateStatus;
 using SiMinor7.Domain.Enums;
+using SiMinor7.Application.Users.Commands.ChangeStatus;
 
 namespace Apis.Controllers;
 
@@ -52,9 +52,9 @@ public class UserController: ApiControllerBase
     }
 
     [HttpPut("{id}/update-status/{status}")]
-    public async Task<ActionResult<string>> UpdateStatus(string id, UserStatus status)
+    public async Task<ActionResult<string>> ChangeStatus(string id, UserStatus status)
     {
-        await Mediator.Send(new UpdateStatusCommand(id, status));
+        await Mediator.Send(new ChangeStatusCommand(id, status));
         return NoContent();
     }
 }

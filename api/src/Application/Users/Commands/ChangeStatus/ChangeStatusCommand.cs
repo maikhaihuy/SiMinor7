@@ -10,9 +10,9 @@ using SiMinor7.Domain.Enums;
 
 namespace SiMinor7.Application.Users.Commands.ChangeStatus;
 
-public record UpdateStatusCommand(string Id, UserStatus Status) : IRequest;
+public record ChangeStatusCommand(string Id, UserStatus Status) : IRequest;
 
-public class UpdateStatusCommandHandler : IRequestHandler<UpdateStatusCommand>
+public class ChangeStatusCommandHandler : IRequestHandler<ChangeStatusCommand>
 {
     private const string TemplateName = "update-user-status.liquid";
 
@@ -20,14 +20,14 @@ public class UpdateStatusCommandHandler : IRequestHandler<UpdateStatusCommand>
     private readonly IEmailService _emailService;
     private readonly SystemSettings _systemSettings;
 
-    public UpdateStatusCommandHandler(UserManager<ApplicationUser> userManager, IEmailService emailService, IOptions<SystemSettings> optionSystemSettings)
+    public ChangeStatusCommandHandler(UserManager<ApplicationUser> userManager, IEmailService emailService, IOptions<SystemSettings> optionSystemSettings)
     {
         _userManager = userManager;
         _emailService = emailService;
         _systemSettings = optionSystemSettings.Value;
     }
 
-    public async Task Handle(UpdateStatusCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ChangeStatusCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.Id);
 

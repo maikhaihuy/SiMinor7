@@ -189,6 +189,58 @@ export class AuthClient {
         }
         return Promise.resolve<FileResponse>(null as any);
     }
+
+    refreshToken(command: RefreshTokenCommand, cancelToken?: CancelToken | undefined): Promise<AuthResponse> {
+        let url_ = this.baseUrl + "/api/Auth/refresh-token";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processRefreshToken(_response);
+        });
+    }
+
+    protected processRefreshToken(response: AxiosResponse): Promise<AuthResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<AuthResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<AuthResponse>(null as any);
+    }
 }
 
 export class UserClient {
@@ -500,7 +552,7 @@ export class UserClient {
         return Promise.resolve<string>(null as any);
     }
 
-    updateStatus(id: string, status: UserStatus, cancelToken?: CancelToken | undefined): Promise<string> {
+    changeStatus(id: string, status: UserStatus, cancelToken?: CancelToken | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/User/{id}/update-status/{status}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -526,11 +578,11 @@ export class UserClient {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processUpdateStatus(_response);
+            return this.processChangeStatus(_response);
         });
     }
 
-    protected processUpdateStatus(response: AxiosResponse): Promise<string> {
+    protected processChangeStatus(response: AxiosResponse): Promise<string> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -581,6 +633,11 @@ export interface UpdatePasswordCommand {
     password: string;
     userId: string;
     purpose: string;
+}
+
+export interface RefreshTokenCommand {
+    accessToken?: string;
+    refreshToken?: string;
 }
 
 export interface PaginatedListOfUserListDto {
